@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f5ef;
+  --surface: #fffdf8;
+  --surface-strong: #efe9dc;
+  --foreground: #1a1a1a;
+  --muted: #5f5a4f;
+  --accent: #0f766e;
+  --accent-soft: #d7f0ec;
+  --border: #d7d0c3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 5%, #ffffff 0%, #f8f3e7 38%, transparent 60%),
+    radial-gradient(circle at 85% 0%, #e6f5f2 0%, transparent 42%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), "Segoe UI", sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+a {
+  color: inherit;
+}
+
+.shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.hero {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: linear-gradient(120deg, var(--surface) 0%, #f0f8f6 100%);
+  padding: 1.5rem;
+}
+
+.grid-cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  padding: 1rem;
+}
+
+.deep-dive {
+  margin-top: 1.25rem;
+  background: #fff9ee;
+  border-left: 4px solid var(--accent);
+  padding: 0.9rem;
+  border-radius: 0.35rem;
+}
+
+.code-block {
+  display: block;
+  padding: 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: #f2efe7;
+  font-family: var(--font-mono), "SFMono-Regular", monospace;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  white-space: pre;
 }

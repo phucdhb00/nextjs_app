@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Internals Lab (App Router)
 
-## Getting Started
+Production-grade learning project for experienced backend engineers who want to deeply understand how Next.js works internally.
 
-First, run the development server:
+## Why This Project Exists
+
+Most tutorials show what to write. This project explains why the runtime behaves that way:
+
+- Rendering internals (SSR, SSG, ISR, CSR, Streaming)
+- Server Components vs Client Components boundaries
+- Cache layers and invalidation behavior
+- Route handlers and middleware lifecycle
+- Advanced routing (dynamic, parallel, intercepting)
+- Real WebSocket workaround architecture
+- Auth, uploads, iframe integration, and observability
+
+## Run Locally
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Run standard Next.js development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Run with custom WebSocket server (recommended for realtime demo):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev:ws
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open:
 
-## Learn More
+```text
+http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Production Build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Or with custom WebSocket server:
 
-## Deploy on Vercel
+```bash
+npm run build
+npm run start:ws
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Auth Credentials (Demo)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- username: `backend`
+- password: `nextjs`
+
+## Text Diagram: Request Lifecycle
+
+```text
+Browser
+	-> HTTP Request
+		-> Middleware (Edge Runtime)
+			-> App Router Match
+				-> Server Component Tree Render (RSC payload)
+					-> HTML stream + Flight data
+						-> Browser receives HTML
+							-> Hydration of Client Components
+								-> Interactive UI
+```
+
+## Text Diagram: Rendering Pipeline
+
+```text
+Route Request
+	-> Determine static/dynamic mode
+	-> Resolve data dependencies (fetch cache strategy)
+	-> Render Server Components to RSC payload
+	-> Merge Client Component references
+	-> Stream HTML + RSC chunks (if Suspense boundaries)
+	-> Browser hydrates client islands
+```
+
+## Text Diagram: Server/Client Boundary
+
+```text
+Server Component (Node/Edge runtime)
+	- can access secrets, DB, filesystem
+	- can await directly in component body
+	- cannot use browser hooks/events
+
+Client Component (Browser)
+	- can use useState/useEffect/events
+	- cannot access server-only modules/secrets
+	- receives serialized props from server
+```
+
+## Notes for Backend Engineers (Spring/Express Perspective)
+
+- Route handlers are closest to controller endpoints.
+- Middleware is like pre-controller filters/interceptors.
+- Server Components are server-side view composition with serialized output.
+- `fetch` caching is framework-level and not equivalent to browser HTTP cache.
+- WebSockets are not first-class in App Router handlers; run them separately.
